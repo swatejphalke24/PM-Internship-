@@ -39,6 +39,8 @@ from routes.recommendations import recommendations_bp
 from routes.allocations import allocations_bp
 from routes.admin import admin_bp
 from routes.notifications import notifications_bp
+from routes.companies import companies_bp
+
 
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(students_bp, url_prefix='/api/students')
@@ -48,6 +50,7 @@ app.register_blueprint(recommendations_bp, url_prefix='/api/recommendations')
 app.register_blueprint(allocations_bp, url_prefix='/api/allocations')
 app.register_blueprint(admin_bp, url_prefix='/api/admin')
 app.register_blueprint(notifications_bp, url_prefix='/api/notifications')
+app.register_blueprint(companies_bp, url_prefix='/api/companies')
 
 @app.route('/api/health')
 def health():

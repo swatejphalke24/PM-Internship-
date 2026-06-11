@@ -31,14 +31,24 @@ const S = {
   grid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16, marginBottom: 24 },
   statCard: (color) => ({ background: color + "10", border: `1.5px solid ${color}33`, borderRadius: 12, padding: "1rem 1.25rem", borderLeft: `4px solid ${color}` }),
   btn: (variant = "primary") => ({
-    padding: "9px 20px", borderRadius: 10,
-    border: "none", cursor: "pointer", fontWeight: 600, fontSize: 14,
+    padding: "9px 20px", borderRadius: 10, border: "none", cursor: "pointer", fontWeight: 600, fontSize: 14,
     background: variant === "primary" ? "#3d5af1" : variant === "success" ? "#0a8754" : variant === "danger" ? "#e53e3e" : "#f4f6fb",
     color: variant === "outline" ? "#3d5af1" : "#fff",
     border: variant === "outline" ? "1.5px solid #3d5af1" : "none",
     transition: "all 0.15s",
   }),
-  input: { width: "100%", padding: "10px 14px", borderRadius: 10, border: "1.5px solid #e2e8f0", fontSize: 14, boxSizing: "border-box", outline: "none", fontFamily: "inherit" },
+  input: {
+    width: "100%",
+    padding: "10px 14px",
+    borderRadius: 10,
+    border: "1.5px solid #1a1d2e",
+    background: "#13191f",
+    boxShadow: "0 2px 8px rgba(10, 7, 7, 0.08)",
+    fontSize: 14,
+    boxSizing: "border-box",
+    outline: "none",
+    fontFamily: "inherit"
+  },
   label: { display: "block", marginBottom: 6, fontSize: 13, fontWeight: 600, color: "#4a5568" },
   formGroup: { marginBottom: 16 },
   scoreBar: (score, color) => ({ height: 8, borderRadius: 4, background: "#e2e8f0", overflow: "hidden", position: "relative", "::after": { content: '""', position: "absolute", left: 0, top: 0, height: "100%", width: `${score * 100}%`, background: color } }),
@@ -46,12 +56,9 @@ const S = {
   avatar: (size = 40) => ({ width: size, height: size, borderRadius: "50%", background: "linear-gradient(135deg, #3d5af1, #6c63ff)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: size * 0.35, flexShrink: 0 }),
   page: { maxWidth: 1100, margin: "0 auto", padding: "2rem 1.5rem" },
   sectionTitle: { fontSize: 22, fontWeight: 700, marginBottom: 4, color: "#1a1d2e" },
-  sectionSub: { color: "#718096", fontSize: 14, marginBottom: 24 },
+  sectionSub: { color: "#090a0c", fontSize: 14, marginBottom: 24 },
   divider: { border: "none", borderTop: "1.5px solid #e2e8f0", margin: "1.5rem 0" },
-  progressBar: (pct, color = "#3d5af1") => ({
-    height: 8, borderRadius: 4, overflow: "hidden", background: "#e2e8f0",
-    position: "relative",
-  }),
+  progressBar: (pct, color = "#3d5af1") => ({ height: 8, borderRadius: 4, overflow: "hidden", background: "#e2e8f0", position: "relative" }),
   alert: (type) => ({
     background: type === "success" ? "#f0fff4" : type === "error" ? "#fff5f5" : "#fffaf0",
     border: `1px solid ${type === "success" ? "#9ae6b4" : type === "error" ? "#feb2b2" : "#fbd38d"}`,
@@ -99,12 +106,13 @@ const NotifDot = ({ count }) => count > 0 ? (
 ) : null;
 
 // ─── Login / Register Page ─────────────────────────────────────────────────────
-const AuthPage = ({ onLogin }) => {
+const AuthPage = ({ onLogin, onCompanyReg }) => {
   const [mode, setMode] = useState("login");
   const [form, setForm] = useState({ email: "", password: "", full_name: "", student_id: "", university: "", degree_program: "", year_of_study: 3, gpa: "", skills: "", preferred_domains: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }));
+
   const handleSubmit = async () => {
     setLoading(true); setError("");
     try {
@@ -122,18 +130,67 @@ const AuthPage = ({ onLogin }) => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #1a1d2e 0%, #2d3561 100%)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ background: "#fff", borderRadius: 20, padding: "2.5rem", width: "100%", maxWidth: 440, boxShadow: "0 20px 60px rgba(0,0,0,0.3)" }}>
+    <div style={{
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #0f172a 0%, #1e293b 45%, #1c2a4a 100%)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 20,
+      position: "relative",
+      overflow: "hidden"
+    }}>
+      <style>{`
+        @keyframes gradientMove {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        @keyframes floatUp {
+          0% { transform: translateY(0px); opacity: 0.6; }
+          50% { transform: translateY(-18px); opacity: 1; }
+          100% { transform: translateY(0px); opacity: 0.6; }
+        }
+        @keyframes popIn {
+          from { transform: scale(0.92); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+      `}</style>
+
+      <div style={{
+        background: "rgba(255,255,255,0.94)",
+        backdropFilter: "blur(12px)",
+        borderRadius: 24,
+        padding: "2.5rem",
+        width: "100%",
+        maxWidth: 460,
+        boxShadow: "0 25px 70px rgba(0,0,0,0.35)",
+        animation: "popIn 0.45s ease",
+        border: "1px solid rgba(255,255,255,0.35)"
+      }}>
         <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <div style={{ fontSize: 36, marginBottom: 8 }}>🎓</div>
-          <h1 style={{ fontSize: 22, fontWeight: 800, color: "#1a1d2e", margin: 0 }}>PM Internship Scheme</h1>
-          <p style={{ color: "#718096", fontSize: 13, marginTop: 4 }}>AI-Powered Smart Allocation Engine</p>
+          <div style={{ fontSize: 42, marginBottom: 8, animation: "floatUp 2.8s ease-in-out infinite" }}>🎓</div>
+          <h1 style={{ fontSize: 24, fontWeight: 900, color: "#1a1d2e", margin: 0 }}>PM Internship Scheme</h1>
+          <p style={{ color: "#4a5568", fontSize: 13, marginTop: 6 }}>AI-Powered Smart Allocation Engine ✨</p>
         </div>
 
-        <div style={{ display: "flex", background: "#f4f6fb", borderRadius: 10, padding: 4, marginBottom: 24 }}>
+        <div style={{ display: "flex", background: "#eef2ff", borderRadius: 14, padding: 5, marginBottom: 24 }}>
           {["login", "register"].map(m => (
-            <button key={m} onClick={() => setMode(m)} style={{ flex: 1, padding: "8px 0", border: "none", borderRadius: 8, cursor: "pointer", fontWeight: 600, fontSize: 14, background: mode === m ? "#fff" : "transparent", color: mode === m ? "#1a1d2e" : "#718096", boxShadow: mode === m ? "0 1px 4px rgba(0,0,0,0.1)" : "none", transition: "all 0.2s" }}>
-              {m === "login" ? "Sign In" : "Register"}
+            <button key={m} onClick={() => setMode(m)} style={{
+              flex: 1,
+              padding: "10px 0",
+              border: "none",
+              borderRadius: 10,
+              cursor: "pointer",
+              fontWeight: 700,
+              fontSize: 14,
+              background: mode === m ? "linear-gradient(135deg, #3d5af1, #6c63ff)" : "transparent",
+              color: mode === m ? "#fff" : "#1d232a",
+              border: mode === m ? "none" : "1px solid #1a1d2e",
+              boxShadow: mode === m ? "0 8px 18px rgba(13, 16, 31, 0.3)" : "none",
+              transition: "all 0.25s"
+            }}>
+              {m === "login" ? "🔐 Sign In" : "📝 Register"}
             </button>
           ))}
         </div>
@@ -144,7 +201,7 @@ const AuthPage = ({ onLogin }) => {
           <>
             <div style={S.formGroup}><label style={S.label}>Email</label><input style={S.input} type="email" placeholder="student@university.edu.my" value={form.email} onChange={set("email")} /></div>
             <div style={S.formGroup}><label style={S.label}>Password</label><input style={S.input} type="password" placeholder="••••••••" value={form.password} onChange={set("password")} /></div>
-            <p style={{ fontSize: 12, color: "#718096", marginBottom: 16 }}>Demo — Admin: admin@pm-internship.gov.my | Student: ahmad.zaki@student.um.edu.my (password: password)</p>
+            <p style={{ fontSize: 12, color: "#718096", marginBottom: 16 }}>Demo — Admin: admin@pm-internship.gov.my | Student: ahmad.zaki@student.um.edu.my</p>
           </>
         ) : (
           <div style={{ maxHeight: 340, overflowY: "auto", paddingRight: 4 }}>
@@ -160,9 +217,22 @@ const AuthPage = ({ onLogin }) => {
           </div>
         )}
 
-        <button onClick={handleSubmit} disabled={loading} style={{ ...S.btn("primary"), width: "100%", padding: "12px", fontSize: 15, marginTop: 8 }}>
-          {loading ? "Please wait..." : mode === "login" ? "Sign In" : "Create Account"}
+        <button onClick={handleSubmit} disabled={loading} style={{
+          ...S.btn("primary"),
+          width: "100%",
+          padding: "13px",
+          fontSize: 15,
+          marginTop: 8,
+          background: "linear-gradient(135deg, #3d5af1, #6c63ff)",
+          boxShadow: "0 10px 20px rgba(61,90,241,0.3)"
+        }}>
+          {loading ? "⏳ Please wait..." : mode === "login" ? "🚀 Sign In" : "✨ Create Account"}
         </button>
+
+        <div style={{ textAlign: "center", marginTop: 16, paddingTop: 16, borderTop: "1px solid #e2e8f0" }}>
+          <p style={{ fontSize: 13, color: "#718096", margin: "0 0 8px" }}>Are you a company wanting to offer internships?</p>
+          <button onClick={onCompanyReg} style={{ ...S.btn("outline"), width: "100%", padding: 10 }}>🏢 Register Your Company</button>
+        </div>
       </div>
     </div>
   );
@@ -331,13 +401,7 @@ const InternshipExplorer = () => {
       </div>
 
       {loading ? <Spinner /> : (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: selected ? "1fr 420px" : "1fr",
-            gap: 20
-          }}
-        >
+        <div style={{ display: "grid", gridTemplateColumns: selected ? "1fr 420px" : "1fr", gap: 20 }}>
           <div>
             {internships.map(i => (
               <div key={i.id} onClick={() => setSelected(i)} style={{ ...S.card, cursor: "pointer", borderLeft: selected?.id === i.id ? "4px solid #3d5af1" : "4px solid transparent", transition: "all 0.15s" }}>
@@ -351,7 +415,7 @@ const InternshipExplorer = () => {
                       <span style={S.badge(i.available_slots > 0 ? "#d97706" : "#e53e3e")}>{i.available_slots} slots</span>
                     </div>
                   </div>
-                  <div style={{ textAlign: "right", fontSize: 12, color: "#718096" }}>
+                  <div style={{ textTransform: "none", fontSize: 12, color: "#718096" }}>
                     <div>Min GPA: {i.min_gpa}</div>
                     <div>{i.duration_weeks}w</div>
                   </div>
@@ -441,6 +505,60 @@ const ProfileEditor = () => {
     </div>
   );
 };
+
+// ─── APPROVELS Dashboard ──────────────────────────────────────────────
+const CompanyApprovals = () => {
+  const [companies, setCompanies] = useState([]);
+  const [msg, setMsg] = useState(null);
+
+  const load = () => {
+    apiFetch("/admin/companies/pending")
+      .then(d => setCompanies(d.companies || []))
+      .catch(e => setMsg({ type: "error", text: e.message }));
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const approve = async (id) => {
+    try {
+      const res = await apiFetch(`/admin/companies/${id}/approve`, { method: "POST" });
+      setMsg({
+        type: "success",
+        text: `Approved! Email: ${res.login_email} | Password: ${res.temp_password}`
+      });
+      load();
+    } catch (e) {
+      setMsg({ type: "error", text: e.message });
+    }
+  };
+
+  return (
+    <div style={S.page}>
+      <h1 style={S.sectionTitle}>🏢 Company Approvals</h1>
+      <p style={S.sectionSub}>Approve company registration requests</p>
+
+      {msg && <div style={S.alert(msg.type)}>{msg.text}</div>}
+
+      {companies.length === 0 ? (
+        <div style={S.card}>No pending company requests.</div>
+      ) : (
+        companies.map(c => (
+          <div key={c.id} style={S.card}>
+            <h3 style={{ marginTop: 0 }}>{c.name}</h3>
+            <p>{c.sector} · {c.location}</p>
+            <p>{c.contact_email}</p>
+            <button onClick={() => approve(c.id)} style={S.btn("success")}>
+              ✅ Approve Company
+            </button>
+          </div>
+        ))
+      )}
+    </div>
+  );
+};
+
 // ─── Admin Dashboard ───────────────────────────────────────────────────────────
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
@@ -524,7 +642,6 @@ const AdminDashboard = () => {
             );
           })}
         </div>
-
         <div style={S.card}>
           <h3 style={{ marginTop: 0 }}>Domain Distribution</h3>
           {(stats.domain_distribution || []).map(d => (
@@ -582,211 +699,312 @@ const AdminDashboard = () => {
   );
 };
 
-// ─── Allocations Table (Admin) ─────────────────────────────────────────────────
+// ─── Allocations Table (Admin View) ───────────────────────────────────────────
 const AllocationsTable = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    apiFetch("/allocations/").then(d => setData(d.allocations || [])).finally(() => setLoading(false));
+    apiFetch("/allocations/")
+      .then(d => setData(d.allocations || []))
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) return <Spinner />;
 
   return (
     <div style={S.page}>
-      <h1 style={S.sectionTitle}>All Allocations</h1>
-      <p style={S.sectionSub}>{data.length} students successfully placed</p>
+      <h1 style={S.sectionTitle}>Final Allocations List</h1>
+      <p style={S.sectionSub}>Official student-to-company placements records</p>
       <div style={S.card}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
           <thead>
             <tr style={{ borderBottom: "2px solid #e2e8f0" }}>
-              {["Student", "ID", "University", "GPA", "Internship", "Company", "Score", "Method", "Date"].map(h => (
-                <th key={h} style={{ textAlign: "left", padding: "10px 12px", color: "#718096", fontWeight: 600, fontSize: 12 }}>{h}</th>
+              {["Student", "University", "Assigned Role", "Company", "Stipend", "Status"].map(h => (
+                <th key={h} style={{ textAlign: "left", padding: "12px", color: "#718096", fontWeight: 600 }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {data.map((a, i) => (
-              <tr key={i} style={{ borderBottom: "1px solid #f4f6fb" }}>
-                <td style={{ padding: "10px 12px", fontWeight: 500 }}>{a.full_name}</td>
-                <td style={{ padding: "10px 12px", color: "#718096", fontSize: 12 }}>{a.student_code}</td>
-                <td style={{ padding: "10px 12px", color: "#718096", fontSize: 12 }}>{a.university}</td>
-                <td style={{ padding: "10px 12px" }}><span style={S.badge(a.gpa >= 3.5 ? "#0a8754" : a.gpa >= 3.0 ? "#d97706" : "#718096")}>{Number(a.gpa || 0).toFixed(2)}</span></td>
-                <td style={{ padding: "10px 12px" }}>{a.title}</td>
-                <td style={{ padding: "10px 12px", color: "#718096" }}>{a.company_name}</td>
-                <td style={{ padding: "10px 12px" }}><span style={S.badge(a.allocation_score >= 0.75 ? "#0a8754" : "#d97706")}>{(a.allocation_score * 100).toFixed(1)}%</span></td>
-                <td style={{ padding: "10px 12px", fontSize: 12 }}><span style={S.badge(a.allocation_method === "student_choice" ? "#6c63ff" : "#3d5af1")}>{a.allocation_method?.replace("_", " ")}</span></td>
-                <td style={{ padding: "10px 12px", color: "#718096", fontSize: 12 }}>{new Date(a.allocated_at).toLocaleDateString()}</td>
-              </tr>
-            ))}
+            {data.length === 0 ? (
+              <tr><td colSpan="6" style={{ padding: "20px", textAlign: "center", color: "#718096" }}>No allocations generated yet.</td></tr>
+            ) : (
+              data.map(row => (
+                <tr key={row.id} style={{ borderBottom: "1px solid #f4f6fb" }}>
+                  <td style={{ padding: "12px", fontWeight: 500 }}>{row.student_name || row.full_name || "—"}</td>
+                  <td style={{ padding: "12px", color: "#4a5568" }}>{row.university}</td>
+                  <td style={{ padding: "12px", fontWeight: 500 }}>{row.internship_title || row.title || "—"}</td>
+                  <td style={{ padding: "12px", color: "#3d5af1", fontWeight: 600 }}>{row.company_name || row.company || "—"}</td>
+                  <td style={{ padding: "12px" }}>RM {row.stipend}</td>
+                  <td style={{ padding: "12px" }}><span style={S.badge("#0a8754")}>CONFIRMED</span></td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
-        {data.length === 0 && <p style={{ textAlign: "center", color: "#718096", padding: "2rem" }}>No allocations yet. Run the AI engine from the dashboard.</p>}
       </div>
     </div>
   );
 };
-// ─── Notifications Panel ───────────────────────────────────────────────────────
-const NotificationsPanel = ({ onRead }) => {
+
+// ─── Company Portal Template ──────────────────────────────────────────────────
+const CompanyPortal = () => {
+  return (
+    <div style={S.page}>
+      <h1 style={S.sectionTitle}>Company Portal</h1>
+      <p style={S.sectionSub}>Manage postings and view AI recommended candidates</p>
+      <div style={S.card}>
+        <h3>Welcome Partner Component</h3>
+        <p style={{ color: "#4a5568" }}>This module allows verified corporate entities to submit requests for industrial trainee placement cohorts.</p>
+      </div>
+    </div>
+  );
+};
+
+const CompanyRegister = ({ onBack }) => {
+  const [form, setForm] = useState({
+    name: "",
+    sector: "",
+    location: "",
+    contact_email: "",
+    website: "",
+    description: ""
+  });
+  const [msg, setMsg] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }));
+
+  const submit = async () => {
+    setLoading(true);
+    setMsg(null);
+    try {
+      const res = await apiFetch("/companies/register", {
+        method: "POST",
+        body: JSON.stringify(form)
+      });
+      setMsg({ type: "success", text: res.message || "Company registration submitted!" });
+      setTimeout(() => onBack(), 1500);
+    } catch (e) {
+      setMsg({ type: "error", text: e.message });
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div style={S.page}>
+      <div style={{ ...S.card, maxWidth: 620, margin: "2rem auto" }}>
+        <h1 style={S.sectionTitle}>🏢 Company Registration</h1>
+        <p style={S.sectionSub}>Submit your company details for admin approval.</p>
+
+        {msg && <div style={S.alert(msg.type)}>{msg.text}</div>}
+
+        <div style={S.formGroup}>
+          <label style={S.label}>Company Name</label>
+          <input style={S.input} value={form.name} onChange={set("name")} />
+        </div>
+
+        <div style={S.formGroup}>
+          <label style={S.label}>Sector</label>
+          <input style={S.input} placeholder="Technology, Finance, Marketing..." value={form.sector} onChange={set("sector")} />
+        </div>
+
+        <div style={S.formGroup}>
+          <label style={S.label}>Location</label>
+          <input style={S.input} value={form.location} onChange={set("location")} />
+        </div>
+
+        <div style={S.formGroup}>
+          <label style={S.label}>Contact Email</label>
+          <input style={S.input} type="email" value={form.contact_email} onChange={set("contact_email")} />
+        </div>
+
+        <div style={S.formGroup}>
+          <label style={S.label}>Website</label>
+          <input style={S.input} value={form.website} onChange={set("website")} />
+        </div>
+
+        <div style={S.formGroup}>
+          <label style={S.label}>Description</label>
+          <textarea style={{ ...S.input, minHeight: 90 }} value={form.description} onChange={set("description")} />
+        </div>
+
+        <button onClick={submit} disabled={loading} style={{ ...S.btn("primary"), width: "100%" }}>
+          {loading ? "Submitting..." : "Submit for Approval"}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// ─── Notifications Screen ─────────────────────────────────────────────────────
+const NotificationsScreen = ({ onClear }) => {
   const [notifs, setNotifs] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    apiFetch("/notifications/").then(d => { setNotifs(d.notifications || []); }).finally(() => setLoading(false));
+    apiFetch("/notifications/")
+      .then(d => setNotifs(d.notifications || []))
+      .catch(() => setNotifs([{ id: 1, text: "System notification channel loaded.", created_at: new Date() }]))
+      .finally(() => setLoading(false));
   }, []);
-
-  const markRead = async (id) => {
-    await apiFetch(`/notifications/${id}/read`, { method: "POST" });
-    setNotifs(n => n.map(x => x.id === id ? { ...x, is_read: true } : x));
-    onRead();
-  };
-
-  const markAll = async () => {
-    await apiFetch("/notifications/mark-all-read", { method: "POST" });
-    setNotifs(n => n.map(x => ({ ...x, is_read: true })));
-    onRead();
-  };
-
-  const icons = { info: "ℹ️", success: "✅", warning: "⚠️", error: "❌" };
-  if (loading) return <Spinner />;
 
   return (
     <div style={S.page}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-        <div><h1 style={S.sectionTitle}>Notifications</h1><p style={S.sectionSub}>{notifs.filter(n => !n.is_read).length} unread</p></div>
-        <button onClick={markAll} style={S.btn("outline")}>Mark all read</button>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <h1 style={S.sectionTitle}>Alert Center</h1>
+        <button onClick={onClear} style={S.btn("outline")}>Mark All Read</button>
       </div>
-      {notifs.length === 0 && <div style={S.card}><p style={{ textAlign: "center", color: "#718096" }}>No notifications yet.</p></div>}
-      {notifs.map(n => (
-        <div key={n.id} onClick={() => !n.is_read && markRead(n.id)} style={{ ...S.card, opacity: n.is_read ? 0.65 : 1, cursor: n.is_read ? "default" : "pointer", borderLeft: `4px solid ${n.is_read ? "#e2e8f0" : n.type === "success" ? "#0a8754" : "#3d5af1"}` }}>
-          <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-            <span style={{ fontSize: 20 }}>{icons[n.type] || "📢"}</span>
-            <div>
-              <div style={{ fontWeight: 600, marginBottom: 4 }}>{n.title}</div>
-              <div style={{ fontSize: 14, color: "#4a5568" }}>{n.message}</div>
-              <div style={{ fontSize: 12, color: "#718096", marginTop: 6 }}>{new Date(n.created_at).toLocaleString()}</div>
+      <p style={S.sectionSub}>System logs and active updates</p>
+      {loading ? <Spinner /> : (
+        notifs.map(n => (
+          <div key={n.id} style={S.card}>
+            <div style={{ fontSize: 12, color: "#718096", marginBottom: 4 }}>{new Date(n.created_at).toLocaleString()}</div>
+            <div style={{ fontSize: 20, marginBottom: 6 }}>
+              🔔✨🎉
             </div>
-            {!n.is_read && <div style={{ marginLeft: "auto", width: 8, height: 8, borderRadius: "50%", background: "#3d5af1", flexShrink: 0, marginTop: 4 }} />}
+            <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 4 }}>
+              {n.title || "Notification"}
+            </div>
+            <div style={{ fontSize: 14 }}>
+              {n.message || n.text || "No message"}
+            </div>
           </div>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 };
 
-// ─── AI Engine Explainer Page ──────────────────────────────────────────────────
-const AIExplainer = () => (
-  <div style={S.page}>
-    <h1 style={S.sectionTitle}>How the AI Engine Works</h1>
-    <p style={S.sectionSub}>Understanding the matching algorithm and allocation strategy</p>
-
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 }}>
-      {[
-        { icon: "🧮", title: "1. Skill Vectorisation", color: "#3d5af1", desc: "Each student's skills and each internship's required skills are mapped onto a shared vocabulary of 70+ technical and professional skills. This creates a sparse binary vector for each entity, with partial-match scoring for compound skills (weight: 0.5)." },
-        { icon: "📐", title: "2. Cosine Similarity", color: "#6c63ff", desc: "The cosine similarity between the student skill vector and the internship requirement vector is computed using scikit-learn. Required skills are weighted 1.0; preferred skills are weighted 0.6. Result ranges 0–1." },
-        { icon: "🎓", title: "3. GPA Scoring", color: "#0a8754", desc: "A normalised GPA score rewards both meeting the minimum threshold and achieving excellence above it. Score = 0 if below minimum GPA; otherwise proportional to (0.5 × normalised GPA + 0.5 × excess above minimum)." },
-        { icon: "❤️", title: "4. Preference Matching", color: "#d97706", desc: "Student domain preferences (e.g., Technology, Finance) are compared against the internship domain. Exact match = 1.0, partial match = 0.7, no match = 0.0, no preference given = 0.5 neutral." },
-        { icon: "⚖️", title: "5. Weighted Composite Score", color: "#e53e3e", desc: "Final Score = 0.50 × skill_similarity + 0.25 × gpa_score + 0.25 × preference_score. Skill match is weighted most heavily as it is the most objective indicator of suitability." },
-        { icon: "🏆", title: "6. Greedy Allocation", color: "#1a1d2e", desc: "Students are sorted by their best available match score. The algorithm iterates in priority order, assigning each student to their highest-scoring available internship. Student-accepted recommendations are honoured in a first pass." },
-      ].map(m => (
-        <div key={m.title} style={{ ...S.card, borderTop: `4px solid ${m.color}` }}>
-          <div style={{ fontSize: 32, marginBottom: 8 }}>{m.icon}</div>
-          <h3 style={{ color: m.color, marginTop: 0, marginBottom: 8 }}>{m.title}</h3>
-          <p style={{ fontSize: 14, color: "#4a5568", lineHeight: 1.7, margin: 0 }}>{m.desc}</p>
-        </div>
-      ))}
-    </div>
-
-    <div style={{ ...S.card, marginTop: 24, background: "#1a1d2e", color: "#fff" }}>
-      <h3 style={{ margin: "0 0 12px", color: "#fff" }}>Scoring Formula</h3>
-      <div style={{ fontFamily: "monospace", fontSize: 15, background: "rgba(255,255,255,0.08)", padding: "1rem 1.5rem", borderRadius: 10, lineHeight: 2.2 }}>
-        <div style={{ color: "#6c63ff" }}>skill_sim = cosine_similarity(student_skill_vec, intern_req_vec)</div>
-        <div style={{ color: "#0a8754" }}>gpa_score = normalize(gpa, min_gpa, scale) if gpa ≥ min_gpa else 0</div>
-        <div style={{ color: "#d97706" }}>pref_score = 1.0 | 0.7 | 0.5 | 0.0 (domain match level)</div>
-        <div style={{ color: "#fff", marginTop: 8 }}>final_score = <span style={{ color: "#3d5af1" }}>0.50</span> × skill_sim + <span style={{ color: "#0a8754" }}>0.25</span> × gpa_score + <span style={{ color: "#d97706" }}>0.25</span> × pref_score</div>
-      </div>
-    </div>
-  </div>
-);
-// ─── Main App ──────────────────────────────────────────────────────────────────
+// ─── Main App Router ──────────────────────────────────────────────────────────
 export default function App() {
   const [user, setUser] = useState(null);
   const [page, setPage] = useState("dashboard");
   const [unread, setUnread] = useState(0);
-  const [authChecked, setAuthChecked] = useState(false);
+
+  const fetchUnread = () => {
+    apiFetch("/notifications/")
+      .then(d => setUnread(d.unread_count || 0))
+      .catch(() => setUnread(0));
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("pm_token");
     if (token) {
-      apiFetch("/auth/me").then(u => { setUser(u); fetchUnread(); }).catch(() => localStorage.removeItem("pm_token")).finally(() => setAuthChecked(true));
-    } else { setAuthChecked(true); }
+      apiFetch("/auth/me")
+        .then(res => {
+          setUser(res.user);
+          setPage(res.user.role === "admin" ? "admin" : res.user.role === "company" ? "company" : "dashboard");
+          fetchUnread();
+        })
+        .catch(() => localStorage.removeItem("pm_token"));
+    }
   }, []);
 
-  const fetchUnread = () => {
-    apiFetch("/notifications/").then(d => setUnread(d.unread_count || 0)).catch(() => { });
+  const handleLogout = () => {
+    localStorage.removeItem("pm_token");
+    setUser(null);
+    setPage("dashboard");
   };
 
-  const logout = () => { localStorage.removeItem("pm_token"); setUser(null); setPage("dashboard"); };
+  if (!user) {
+    if (page === "companyRegister") {
+      return <CompanyRegister onBack={() => setPage("dashboard")} />;
+    }
 
-  if (!authChecked) return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}><Spinner /></div>;
-  if (!user) return <AuthPage onLogin={(u) => { setUser(u); fetchUnread(); setAuthChecked(true); }} />;
+    return (
+      <AuthPage
+        onLogin={(u) => {
+          setUser(u);
+          setPage(u.role === "admin" ? "admin" : u.role === "company" ? "company" : "dashboard");
+          fetchUnread();
+        }}
+        onCompanyReg={() => setPage("companyRegister")}
+      />
+    );
+  }
 
   const isAdmin = user.role === "admin";
-  const studentNav = [
-    { id: "dashboard", label: "Dashboard" },
-    { id: "internships", label: "Browse Internships" },
-    { id: "profile", label: "My Profile" },
-    { id: "ai", label: "How AI Works" },
-  ];
-  const adminNav = [
-    { id: "dashboard", label: "Dashboard" },
-    { id: "internships", label: "All Internships" },
-    { id: "allocations", label: "Allocations" },
-    { id: "ai", label: "AI Engine" },
-  ];
-  const navItems = isAdmin ? adminNav : studentNav;
+  const isCompany = user.role === "company";
+
+  const navItems = isAdmin
+    ? [
+      { id: "admin", label: "Dashboard" },
+      { id: "approvals", label: "Approvals" },
+      { id: "allocations", label: "Placements" },
+      { id: "explorer", label: "Jobs" }
+    ] : isCompany
+      ? [{ id: "company", label: "Company Portal" }, { id: "explorer", label: "Browse Listings" }]
+      : [{ id: "dashboard", label: "My Dashboard" }, { id: "explorer", label: "Find Internships" }, { id: "profile", label: "My Profile" }];
 
   const renderPage = () => {
-    switch (page) {
-      case "dashboard": return isAdmin ? <AdminDashboard /> : <StudentDashboard />;
-      case "internships": return <InternshipExplorer />;
-      case "profile": return <ProfileEditor />;
-      case "allocations": return <AllocationsTable />;
-      case "notifications": return <NotificationsPanel onRead={fetchUnread} />;
-      case "ai": return <AIExplainer />;
-      default: return <StudentDashboard />;
+    if (page === "notifications") return <NotificationsScreen onClear={() => setUnread(0)} />;
+
+    if (page === "companyRegister") return <CompanyRegister />;
+
+    if (isAdmin) {
+      switch (page) {
+        case "admin": return <AdminDashboard />;
+        case "allocations": return <AllocationsTable />;
+        case "explorer": return <InternshipExplorer />;
+        default: return <AdminDashboard />;
+        case "approvals": return <CompanyApprovals />;
+      }
+    } else if (isCompany) {
+      switch (page) {
+        case "company": return <CompanyPortal />;
+        case "explorer": return <InternshipExplorer />;
+        default: return <CompanyPortal />;
+      }
+    } else {
+      switch (page) {
+        case "dashboard": return <StudentDashboard />;
+        case "explorer": return <InternshipExplorer />;
+        case "profile": return <ProfileEditor />;
+        default: return <StudentDashboard />;
+      }
     }
   };
 
   return (
-    <div style={S.app}>
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" />
+    <AuthContext.Provider value={{ user, handleLogout }}>
+      <div style={S.app}>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" />
 
-      <nav style={S.nav}>
-        <div style={S.navBrand}>
-          <span style={{ fontSize: 22 }}>🎓</span>
-          <span>PM Internship</span>
-          {isAdmin && <span style={{ ...S.badge("#d97706"), fontSize: 10, marginLeft: 4 }}>ADMIN</span>}
-        </div>
-
-        <div style={S.navLinks}>
-          {navItems.map(n => (
-            <button key={n.id} onClick={() => setPage(n.id)} style={S.navLink(page === n.id)}>{n.label}</button>
-          ))}
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <button onClick={() => { setPage("notifications"); fetchUnread(); }} style={{ ...S.navLink(page === "notifications"), display: "flex", alignItems: "center", gap: 6 }}>
-            🔔 <NotifDot count={unread} />
-          </button>
-          <div style={S.avatar(32)}>{user.profile?.full_name?.[0] || user.email?.[0]?.toUpperCase() || "U"}</div>
-          <button onClick={logout} style={{ ...S.navLink(false), fontSize: 13 }}>Sign out</button>
-        </div>
-      </nav>
-
-      <main>{renderPage()}</main>
-    </div>
+        <nav style={S.nav}>
+          <div style={S.navBrand}>
+            <span style={{ fontSize: 22 }}>🎓</span>
+            <span>PM Internship</span>
+            {isAdmin && <span style={{ ...S.badge("#d97706"), fontSize: 10, marginLeft: 4 }}>ADMIN</span>}
+            {isCompany && <span style={{ ...S.badge("#0a8754"), fontSize: 10, marginLeft: 4 }}>COMPANY</span>}
+          </div>
+          <div style={S.navLinks}>
+            {navItems.map(n => (
+              <button key={n.id} onClick={() => setPage(n.id)} style={S.navLink(page === n.id)}>{n.label}</button>
+            ))}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <button onClick={() => { setPage("notifications"); setUnread(0); }} style={{ ...S.navLink(page === "notifications"), display: "flex", alignItems: "center", gap: 6, background: "none" }}>
+              🔔 <NotifDot count={unread} />
+            </button>
+            <span style={{ fontSize: 14, color: "rgb(255, 255, 255)" }}>{user.full_name || user.email}</span>
+            <button onClick={handleLogout} style={{
+              padding: "8px 16px",
+              borderRadius: 10,
+              border: "1.5px solid #f87171",
+              background: "rgba(136, 181, 197, 0.08)",
+              color: "#fff",
+              cursor: "pointer",
+              fontWeight: 600,
+              transition: "all 0.3s ease",
+              boxShadow: "0 4px 12px rgba(241, 85, 85, 0.25)"
+            }}>Logout</button>
+          </div>
+        </nav>
+        {renderPage()}
+      </div>
+    </AuthContext.Provider>
   );
 }
-
