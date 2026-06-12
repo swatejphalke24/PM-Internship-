@@ -30,7 +30,7 @@ app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB
 # Extensions
 CORS(app, origins=[
     'http://localhost:5173',
-    'https://*.vercel.app'
+    'https://pm-internship-blond.vercel.app'
 ], supports_credentials=True)
 jwt = JWTManager(app)
 
