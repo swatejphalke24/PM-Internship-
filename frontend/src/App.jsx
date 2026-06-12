@@ -4,7 +4,7 @@ import { useState, useEffect, createContext, useContext } from "react";
 const AuthContext = createContext(null);
 const useAuth = () => useContext(AuthContext);
 
-const API = "http://localhost:5000/api";
+const API = import.meta.env.VITE_API_URL;
 const apiFetch = async (path, opts = {}) => {
   const token = localStorage.getItem("pm_token");
   const res = await fetch(`${API}${path}`, {
