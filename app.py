@@ -17,17 +17,21 @@ app.config['JWT_SECRET_KEY'] = 'jwt-pm-internship-2025'
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)
 
 # MySQL
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'root123'
-app.config['MYSQL_DB'] = 'pm_internship'
+app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST', 'localhost')
+app.config['MYSQL_USER'] = os.getenv('MYSQL_USER', 'root')
+app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD', 'root123')
+app.config['MYSQL_DB'] = os.getenv('MYSQL_DB', 'pm_internship')
+app.config['MYSQL_PORT'] = int(os.getenv('MYSQL_PORT', 3306))
 
 # Uploads
 app.config['UPLOAD_FOLDER'] = 'uploads/resumes'
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB
 
 # Extensions
-CORS(app, origins=['http://localhost:5173'], supports_credentials=True)
+CORS(app, origins=[
+    'http://localhost:5173',
+    'https://*.vercel.app'
+], supports_credentials=True)
 jwt = JWTManager(app)
 
 # Register blueprints
