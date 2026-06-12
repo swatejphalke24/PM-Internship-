@@ -583,12 +583,81 @@ const AdminDashboard = () => {
   if (loading) return <Spinner />;
   if (!stats) return <p>Failed to load admin data.</p>;
 
+  const allocated = stats.total_allocations || 0;
+  const totalStudents = stats.total_students || 1;
+  const unallocated = Math.max(totalStudents - allocated, 0);
+  const allocatedPct = Math.round((allocated / totalStudents) * 100);
+
   return (
     <div style={S.page}>
       <h1 style={S.sectionTitle}>Admin Dashboard</h1>
       <p style={S.sectionSub}>PM Internship AI Allocation Engine — System Overview</p>
 
       {msg && <div style={S.alert(msg.type)}>{msg.text}</div>}
+
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+        gap: 18,
+        marginBottom: 24
+      }}>
+        <div style={{ ...S.card, borderLeft: "5px solid #3d5af1" }}>
+          <div style={{ fontSize: 28 }}>🎓</div>
+          <h2>{stats.total_students}</h2>
+          <p>Total Students</p>
+        </div>
+
+        <div style={{ ...S.card, borderLeft: "5px solid #0a8754" }}>
+          <div style={{ fontSize: 28 }}>✅</div>
+          <h2>{stats.total_allocations}</h2>
+          <p>Allocated Students</p>
+        </div>
+
+        <div style={{ ...S.card, borderLeft: "5px solid #d97706" }}>
+          <div style={{ fontSize: 28 }}>🏢</div>
+          <h2>{stats.total_internships}</h2>
+          <p>Total Internships</p>
+        </div>
+
+        <div style={{ ...S.card, borderLeft: "5px solid #e63946" }}>
+          <div style={{ fontSize: 28 }}>📋</div>
+          <h2>{stats.unallocated_students}</h2>
+          <p>Pending Students</p>
+        </div>
+      </div>
+
+      <div style={{ ...S.card, marginBottom: 24 }}>
+        <h3 style={{ marginTop: 0 }}>📊 Allocation Analytics</h3>
+
+        <div style={{ marginBottom: 18 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+            <span>Allocated Students</span>
+            <strong>{allocated} / {totalStudents} ({allocatedPct}%)</strong>
+          </div>
+          <div style={{ height: 12, background: "#e2e8f0", borderRadius: 999, overflow: "hidden" }}>
+            <div style={{
+              height: "100%",
+              width: `${allocatedPct}%`,
+              background: "linear-gradient(90deg, #0a8754, #22c55e)",
+              borderRadius: 999
+            }} />
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div style={{ padding: 16, borderRadius: 14, background: "#f0fff4", border: "1px solid #9ae6b4" }}>
+            <div style={{ fontSize: 26 }}>✅</div>
+            <h2 style={{ margin: "6px 0", color: "#0a8754" }}>{allocated}</h2>
+            <p style={{ margin: 0, color: "#276749" }}>Allocated</p>
+          </div>
+
+          <div style={{ padding: 16, borderRadius: 14, background: "#fffaf0", border: "1px solid #fbd38d" }}>
+            <div style={{ fontSize: 26 }}>⏳</div>
+            <h2 style={{ margin: "6px 0", color: "#d97706" }}>{unallocated}</h2>
+            <p style={{ margin: 0, color: "#c05621" }}>Unallocated</p>
+          </div>
+        </div>
+      </div>
 
       {/* Engine Controls */}
       <div style={{ ...S.card, background: "linear-gradient(135deg, #1a1d2e, #2d3561)", color: "#fff", marginBottom: 24 }}>
