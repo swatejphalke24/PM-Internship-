@@ -22,10 +22,9 @@ const apiFetch = async (path, opts = {}) => {
 // ─── Styles ────────────────────────────────────────────────────────────────────
 const S = {
   app: { fontFamily: "'DM Sans', sans-serif", minHeight: "100vh", background: "#f4f6fb", color: "#1a1d2e" },
-  nav: { background: "#1a1d2e", color: "#fff", padding: "0 2rem", display: "flex", alignItems: "center", height: 60, position: "sticky", top: 0, zIndex: 100, boxShadow: "0 2px 12px rgba(0,0,0,0.15)" },
+  nav: { background: "#1a1d2e", color: "#fff", padding: "0.75rem 1rem", display: "flex", alignItems: "center", minHeight: 60, position: "sticky", top: 0, zIndex: 100, boxShadow: "0 2px 12px rgba(0,0,0,0.15)", flexWrap: "wrap", gap: 10 },
   navBrand: { fontWeight: 700, fontSize: 18, color: "#fff", display: "flex", alignItems: "center", gap: 10 },
-  navLinks: { display: "flex", gap: 4, marginLeft: 32, flex: 1 },
-  navLink: (active) => ({ padding: "6px 14px", borderRadius: 8, cursor: "pointer", fontSize: 14, fontWeight: 500, background: active ? "rgba(255,255,255,0.12)" : "transparent", color: active ? "#fff" : "rgba(255,255,255,0.65)", border: "none", transition: "all 0.15s" }),
+  navLinks: { display: "flex", gap: 6, marginLeft: 16, flex: 1, flexWrap: "wrap" }, navLink: (active) => ({ padding: "6px 14px", borderRadius: 8, cursor: "pointer", fontSize: 14, fontWeight: 500, background: active ? "rgba(255,255,255,0.12)" : "transparent", color: active ? "#fff" : "rgba(255,255,255,0.65)", border: "none", transition: "all 0.15s" }),
   badge: (color) => ({ background: color + "22", color, padding: "3px 10px", borderRadius: 20, fontSize: 12, fontWeight: 600 }),
   card: { background: "#fff", borderRadius: 16, padding: "1.5rem", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", marginBottom: 16 },
   grid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16, marginBottom: 24 },
@@ -54,8 +53,7 @@ const S = {
   scoreBar: (score, color) => ({ height: 8, borderRadius: 4, background: "#e2e8f0", overflow: "hidden", position: "relative", "::after": { content: '""', position: "absolute", left: 0, top: 0, height: "100%", width: `${score * 100}%`, background: color } }),
   tag: { display: "inline-flex", alignItems: "center", background: "#eef2ff", color: "#3d5af1", borderRadius: 6, padding: "3px 10px", fontSize: 12, fontWeight: 500, margin: "2px" },
   avatar: (size = 40) => ({ width: size, height: size, borderRadius: "50%", background: "linear-gradient(135deg, #3d5af1, #6c63ff)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: size * 0.35, flexShrink: 0 }),
-  page: { maxWidth: 1100, margin: "0 auto", padding: "2rem 1.5rem" },
-  sectionTitle: { fontSize: 22, fontWeight: 700, marginBottom: 4, color: "#1a1d2e" },
+  page: { maxWidth: 1100, margin: "0 auto", padding: "1.25rem 1rem", overflowX: "hidden" }, sectionTitle: { fontSize: 22, fontWeight: 700, marginBottom: 4, color: "#1a1d2e" },
   sectionSub: { color: "#090a0c", fontSize: 14, marginBottom: 24 },
   divider: { border: "none", borderTop: "1.5px solid #e2e8f0", margin: "1.5rem 0" },
   progressBar: (pct, color = "#3d5af1") => ({ height: 8, borderRadius: 4, overflow: "hidden", background: "#e2e8f0", position: "relative" }),
@@ -97,7 +95,19 @@ const SkillTag = ({ skill }) => <span style={S.tag}>{skill}</span>;
 const Spinner = () => (
   <div style={{ display: "flex", justifyContent: "center", padding: "3rem", color: "#3d5af1" }}>
     <div style={{ width: 36, height: 36, border: "3px solid #e2e8f0", borderTopColor: "#3d5af1", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
-    <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+    <style>{`@media (max-width: 768px) {
+  nav {
+    flex-wrap: wrap;
+    height: auto !important;
+    padding: 12px !important;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}@keyframes spin{to{transform:rotate(360deg)}}`}</style>
   </div>
 );
 
@@ -786,8 +796,8 @@ const AllocationsTable = () => {
     <div style={S.page}>
       <h1 style={S.sectionTitle}>Final Allocations List</h1>
       <p style={S.sectionSub}>Official student-to-company placements records</p>
-      <div style={S.card}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
+      <div style={{ ...S.card, overflowX: "auto" }}>
+        <table style={{ width: "100%", minWidth: 750, borderCollapse: "collapse", fontSize: 14 }}>
           <thead>
             <tr style={{ borderBottom: "2px solid #e2e8f0" }}>
               {["Student", "University", "Assigned Role", "Company", "Stipend", "Status"].map(h => (
