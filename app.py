@@ -28,10 +28,14 @@ app.config['UPLOAD_FOLDER'] = 'uploads/resumes'
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB
 
 # Extensions
-CORS(app, origins=[
-    'http://localhost:5173',
-    'https://pm-internship-blond.vercel.app'
-], supports_credentials=True)
+CORS(app, resources={
+    r"/api/*": {
+        "origins": [
+            "http://localhost:5173",
+            "https://pm-internship-blond.vercel.app"
+        ]
+    }
+}, supports_credentials=True)
 jwt = JWTManager(app)
 
 # Register blueprints
