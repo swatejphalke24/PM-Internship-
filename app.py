@@ -32,14 +32,24 @@ CORS(app, resources={
     r"/api/*": {
         "origins": [
             "http://localhost:5173",
-            "https://pm-internship-blond.vercel.app"
+            "https://pm-internship-blond.vercel.app",
+            "https://pm-internship-6sw1yfal1-swatej-s-projects.vercel.app"
         ]
     }
 }, supports_credentials=True)
 
 @app.after_request
 def add_cors_headers(response):
-    response.headers["Access-Control-Allow-Origin"] = "https://pm-internship-blond.vercel.app"
+    allowed_origins = [
+        "http://localhost:5173",
+        "https://pm-internship-blond.vercel.app",
+        "https://pm-internship-6sw1yfal1-swatej-s-projects.vercel.app"
+    ]
+
+    origin = request.headers.get("Origin")
+    if origin in allowed_origins:
+        response.headers["Access-Control-Allow-Origin"] = origin
+
     response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
     response.headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,DELETE,OPTIONS"
     return response
