@@ -3,7 +3,7 @@ PM Internship Scheme - AI-Based Smart Allocation & Recommendation Engine
 Backend: Flask + MySQL + scikit-learn
 """
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 import os
