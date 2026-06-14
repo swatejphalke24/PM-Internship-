@@ -38,18 +38,40 @@ CORS(app, resources={
     }
 }, supports_credentials=True)
 
+@app.before_request
+def handle_preflight():
+    if request.method == "OPTIONS":
+        response = jsonify({"status": "ok"})
+        origin = request.headers.get("Origin")
+
+        allowed_origins = [
+            "http://localhost:5173",
+            "https://pm-internship-blond.vercel.app",
+            "https://pm-internship-6sw1yfal1-swatej-s-projects.vercel.app",
+        ]
+
+        if origin in allowed_origins:
+            response.headers["Access-Control-Allow-Origin"] = origin
+
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
+        response.headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,DELETE,OPTIONS"
+
+        return response, 200
+
 @app.after_request
 def add_cors_headers(response):
+    origin = request.headers.get("Origin")
+
     allowed_origins = [
         "http://localhost:5173",
         "https://pm-internship-blond.vercel.app",
-        "https://pm-internship-6sw1yfal1-swatej-s-projects.vercel.app"
+        "https://pm-internship-6sw1yfal1-swatej-s-projects.vercel.app",
     ]
 
-    origin = request.headers.get("Origin")
     if origin in allowed_origins:
         response.headers["Access-Control-Allow-Origin"] = origin
 
+    response.headers["Vary"] = "Origin"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
     response.headers["Access-Control-Allow-Methods"] = "GET,POST,PUT,DELETE,OPTIONS"
     return response
