@@ -12,7 +12,10 @@ def get_db():
             user=current_app.config['MYSQL_USER'],
             password=current_app.config['MYSQL_PASSWORD'],
             database=current_app.config['MYSQL_DB'],
-            autocommit=False
+            port=current_app.config.get('MYSQL_PORT', 3306),
+            autocommit=False,
+            connection_timeout=10,
+            use_pure=True
         )
     return g.db
 
