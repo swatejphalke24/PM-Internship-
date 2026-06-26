@@ -32,19 +32,32 @@ def register():
         (data['email'], pw_hash, 'student'), commit=True
     )
 
-    # Create student profile
-    gpa = float(data['gpa'])
-    query_db(
-        '''INSERT INTO student_profiles 
-           (user_id, full_name, student_id, university, degree_program, 
-            year_of_study, gpa, phone, state, skills, preferred_domains)
-           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''',
-        (user_id, data['full_name'], data['student_id'], data['university'],
-         data['degree_program'], data['year_of_study'], gpa,
-         data.get('phone', ''), data.get('state', ''),
-         data.get('skills', '[]'), data.get('preferred_domains', '[]')),
-        commit=True
-    )
+# Create student profile
+gpa = float(data['gpa'])
+
+query_db(
+    '''INSERT INTO student_profiles
+       (user_id, full_name, student_id, university, degree_program,
+        year_of_study, gpa, phone, state, skills,
+        preferred_domains, profile_complete, allocation_status)
+       VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''',
+    (
+        user_id,
+        data['full_name'],
+        data['student_id'],
+        data['university'],
+        data['degree_program'],
+        data['year_of_study'],
+        gpa,
+        data.get('phone', ''),
+        data.get('state', ''),
+        data.get('skills', '[]'),
+        data.get('preferred_domains', '[]'),
+        True,          # profile_complete
+        'pending'      # allocation_status
+    ),
+    commit=True
+)
 
     # Welcome notification
     query_db(
